@@ -1,8 +1,18 @@
+
 // api/style.js
+export const config = { runtime: "nodejs" };
+
 import OpenAI from "openai";
+// Optional: quick GET debug (remove later)
+async function canary(req, res) {
+  const hasKey = !!process.env.OPENAI_API_KEY;
+  return res.status(200).json({ ok: true, hasKey });
+}
 
 export default async function handler(req, res) {
-  // Allow a quick GET sanity check
+  if (req.method === "GET") {
+    return canary(req, res);
+  }
   if (req.method !== "POST") {
     return res.status(405).json({ error: "POST only" });
   }
@@ -75,4 +85,6 @@ No prose, no markdown.
     console.error("STYLE API ERROR:", err);
     return res.status(500).json({ error: err.message ?? "Server error" });
   }
+
+
 }
